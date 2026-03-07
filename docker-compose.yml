@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  hmr-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hmr_app
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - VITE_PORT=5173
+      - CHOKIDAR_USEPOLLING=true
+
+volumes:
+  node_modules_cache:
+
+
