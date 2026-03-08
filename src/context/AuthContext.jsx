@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 /**
- * AuthContext - Contexto de autenticación global (Mock for Frontend only)
+ * AuthContext - Contexto de autenticación global
+ * Conecta con el backend FastAPI para login, registro y verificación de sesión.
  */
 
 const AuthContext = createContext(null);
@@ -12,47 +12,78 @@ export function AuthProvider({ children }) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Verificar sesión al cargar
+    // Verificar sesión al cargar (re-validar JWT con el backend)
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const savedUser = localStorage.getItem('user');
-
-        if (token && savedUser) {
-            try {
-                setUser(JSON.parse(savedUser));
-            } catch {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+        const verifySession = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setIsLoading(false);
+                return;
             }
-        }
-        setIsLoading(false);
+
+            try {
+                const res = await fetch('/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    setUser(data.user);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                } else {
+                    // Token inválido o expirado
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    setUser(null);
+                }
+            } catch {
+                // Backend no disponible, usar datos locales como fallback
+                const savedUser = localStorage.getItem('user');
+                if (savedUser) {
+                    try {
+                        setUser(JSON.parse(savedUser));
+                    } catch {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    }
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        verifySession();
     }, []);
 
     /**
-     * Iniciar sesión (Mock)
+     * Iniciar sesión vía API
      */
     const login = async (email, password) => {
         setError(null);
         setIsLoading(true);
 
         try {
-            // Fake delay
-            await new Promise((resolve) => setTimeout(resolve, 800));
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
 
-            // Basic mock validation
-            if (!email || !password) {
-                throw new Error('Credenciales inválidas');
+            const text = await res.text();
+            let data;
+            try {
+                data = text ? JSON.parse(text) : {};
+            } catch {
+                throw new Error('El servidor no respondió correctamente. Verifica que el backend esté corriendo.');
             }
 
-            const mockToken = 'mock-jwt-token-12345';
-            localStorage.setItem('token', mockToken);
+            if (!res.ok) {
+                throw new Error(data.detail || 'Error al iniciar sesión');
+            }
 
-            const userData = {
-                email: email,
-                full_name: 'Admin HMR'
-            };
-            localStorage.setItem('user', JSON.stringify(userData));
-            setUser(userData);
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            setUser(data.user);
 
             return { success: true };
         } catch (err) {
@@ -65,16 +96,36 @@ export function AuthProvider({ children }) {
     };
 
     /**
-     * Registrar nuevo usuario (Mock)
+     * Registrar nuevo usuario vía API
      */
     const register = async (fullName, email, password) => {
         setError(null);
         setIsLoading(true);
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 800));
-            // Después de registrar, hacer login automático
-            return await login(email, password);
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ full_name: fullName, email, password }),
+            });
+
+            const text = await res.text();
+            let data;
+            try {
+                data = text ? JSON.parse(text) : {};
+            } catch {
+                throw new Error('El servidor no respondió correctamente. Verifica que el backend esté corriendo.');
+            }
+
+            if (!res.ok) {
+                throw new Error(data.detail || 'Error al registrar usuario');
+            }
+
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            setUser(data.user);
+
+            return { success: true };
         } catch (err) {
             const message = err.message || 'Error al registrar usuario';
             setError(message);

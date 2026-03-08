@@ -7,6 +7,7 @@ import Settings from './pages/Settings/Settings';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Signatures from './pages/Signatures';
+import SignaturesHistory from './pages/SignaturesHistory';
 
 /**
  * App - Componente raíz de la aplicación
@@ -32,7 +33,8 @@ function App() {
                         }
                     >
                         <Route index element={<Dashboard />} />
-                        <Route path="signatures" element={<Signatures />} />
+                        <Route path="signatures" element={<SignaturesHistory />} />
+                        <Route path="signatures/new" element={<Signatures />} />
                         <Route path="settings" element={<Settings />} />
                     </Route>
 

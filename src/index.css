@@ -3,13 +3,12 @@
 /* ============================================================================
    HMR Design System
    ============================================================================ */
-
 @theme {
   /* Paleta de colores - Rojo opaco como color principal */
-  --color-primary: #b91c1c;
-  --color-primary-light: #dc2626;
-  --color-primary-dark: #991b1b;
-  --color-primary-muted: #7f1d1d;
+  --color-primary: #009098;
+  --color-primary-light: #25d2db;
+  --color-primary-dark: #1b9096;
+  --color-primary-muted: #1b787d;
 
   /* Background colors - Dark theme */
   --color-bg-primary: #0f0f0f;
@@ -47,6 +46,7 @@
   --radius-xl: 1rem;
 
   /* Shadows */
+  --shadow-none: #183030;
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);

@@ -1,0 +1,36 @@
+"""
+HMR Backend - FastAPI Application
+Main entrypoint for the authentication API.
+"""
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from db import init_db
+from routes.auth import router as auth_router
+from routes.signatures import router as signatures_router
+
+app = FastAPI(title="HMR API", version="1.0.0")
+
+# CORS middleware (allows frontend dev server)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mount routes
+app.include_router(auth_router)
+app.include_router(signatures_router)
+
+
+@app.on_event("startup")
+async def startup():
+    """Initialize database on startup."""
+    init_db()
+
+
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok", "service": "hmr-backend"}

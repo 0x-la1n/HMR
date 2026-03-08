@@ -125,7 +125,9 @@ export default function Dashboard() {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <LayoutDashboard className="w-8 h-8 text-[var(--color-primary)]" />
+                                <div className="p-2.5 rounded-xl bg-[var(--color-primary)]/10">
+                                    <LayoutDashboard className="w-6 h-6 text-[var(--color-primary)]" />
+                                </div>
                                 <h1 className="text-2xl font-semibold">Dashboard HMR</h1>
                             </div>
                             <p className="text-[var(--color-text-secondary)]">

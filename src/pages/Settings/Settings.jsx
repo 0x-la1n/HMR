@@ -59,7 +59,9 @@ export default function Settings() {
                 {/* Header */}
                 <div className="mb-4">
                     <div className="flex items-center gap-3 mb-2">
-                        <SettingsIcon className="w-8 h-8 text-[var(--color-primary)]" />
+                        <div className="p-2.5 rounded-xl bg-[var(--color-primary)]/10">
+                            <SettingsIcon className="w-6 h-6 text-[var(--color-primary)]" />
+                        </div>
                         <h1 className="text-xl font-semibold text-[var(--color-text-primary)]">Configuración</h1>
                     </div>
                     <p className="text-[var(--color-text-secondary)]">

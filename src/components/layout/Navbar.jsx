@@ -131,11 +131,11 @@ export default function Navbar() {
                             <div className="p-1">
                                 <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] rounded-lg transition-colors">
                                     <Activity className="w-4 h-4" />
-                                    Activity Log
+                                    Logs
                                 </button>
                                 <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] rounded-lg transition-colors">
                                     <Github className="w-4 h-4" />
-                                    Support
+                                    Soporte
                                 </button>
                                 <div className="h-px bg-[var(--color-border)] my-1 mx-2"></div>
                                 <button
@@ -143,7 +143,7 @@ export default function Navbar() {
                                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10 rounded-lg transition-colors"
                                 >
                                     <LogOut className="w-4 h-4" />
-                                    Sign Out
+                                    Cerrar Sesión
                                 </button>
                             </div>
                         </div>

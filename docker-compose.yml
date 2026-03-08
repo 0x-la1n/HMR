@@ -1,6 +1,42 @@
 version: '3.8'
 
 services:
+  # === PostgreSQL Database ===
+  postgres:
+    image: postgres:15-alpine
+    container_name: hmr_postgres
+    restart: always
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-hmr}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hmr_secret}
+      POSTGRES_DB: ${DB_NAME:-hmr_db}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # === FastAPI Backend ===
+  hmr-backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: hmr_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/app
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-hmr}
+      - DB_PASSWORD=${DB_PASSWORD:-hmr_secret}
+      - DB_NAME=${DB_NAME:-hmr_db}
+      - JWT_SECRET=${JWT_SECRET:-hmr-jwt-secret-change-in-production}
+    depends_on:
+      - postgres
+
+  # === React Frontend (Vite) ===
   hmr-app:
     build:
       context: .
@@ -15,8 +51,8 @@ services:
     environment:
       - VITE_PORT=5173
       - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - hmr-backend
 
 volumes:
-  node_modules_cache:
-
-
+  pgdata:
