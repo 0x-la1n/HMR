@@ -67,13 +67,198 @@ def init_db():
                     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
+
+            # === Hotel Structure Tables ===
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS properties (
+                    id          SERIAL PRIMARY KEY,
+                    name        VARCHAR(150) NOT NULL,
+                    address     TEXT,
+                    timezone    VARCHAR(50) DEFAULT 'America/Caracas',
+                    is_active   BOOLEAN DEFAULT TRUE,
+                    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS modules (
+                    id          SERIAL PRIMARY KEY,
+                    property_id INTEGER NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
+                    number      INTEGER NOT NULL,
+                    name        VARCHAR(100),
+                    category    VARCHAR(20) DEFAULT 'hotel' CHECK (category IN ('hotel', 'owner')),
+                    is_active   BOOLEAN DEFAULT TRUE,
+                    sort_order  INTEGER DEFAULT 0,
+                    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(property_id, number)
+                );
+            """)
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS floors (
+                    id          SERIAL PRIMARY KEY,
+                    module_id   INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+                    code        VARCHAR(10) NOT NULL,
+                    name        VARCHAR(100),
+                    is_active   BOOLEAN DEFAULT TRUE,
+                    sort_order  INTEGER DEFAULT 0,
+                    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(module_id, code)
+                );
+            """)
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS rooms (
+                    id                  SERIAL PRIMARY KEY,
+                    floor_id            INTEGER NOT NULL REFERENCES floors(id) ON DELETE CASCADE,
+                    room_number         VARCHAR(20) NOT NULL UNIQUE,
+                    status              VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
+                    category            VARCHAR(20) DEFAULT 'hotel' CHECK (category IN ('hotel', 'owner')),
+                    last_battery_change DATE,
+                    created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+
+            # === Maintenance Tables ===
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS part_types (
+                    id          SERIAL PRIMARY KEY,
+                    name        VARCHAR(100) NOT NULL UNIQUE,
+                    category    VARCHAR(20) NOT NULL CHECK (category IN ('battery', 'mechanical')),
+                    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS maintenance_logs (
+                    id            SERIAL PRIMARY KEY,
+                    room_id       INTEGER NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+                    part_type_id  INTEGER REFERENCES part_types(id) ON DELETE SET NULL,
+                    type          VARCHAR(20) NOT NULL CHECK (type IN ('battery', 'mechanical')),
+                    description   TEXT,
+                    performed_by  INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    performed_at  DATE NOT NULL DEFAULT CURRENT_DATE,
+                    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+
             conn.commit()
             cur.close()
             release_connection(conn)
-            print("✅ Database initialized successfully")
+            print("✅ Database tables initialized successfully")
+
+            # Seed defaults
+            _seed_hotel_structure()
+            _seed_part_types()
             return
         except psycopg2.OperationalError as e:
             print(f"⏳ Waiting for database (attempt {attempt + 1}/10)... {e}")
             time.sleep(2)
 
     raise Exception("❌ Could not connect to database after 10 attempts")
+
+
+def _seed_hotel_structure():
+    """
+    Seed the Hotel Margarita Real structure if no properties exist yet.
+    6 modules, 4 floors each, rooms with logical numbering.
+    Modules 1 & 6 are 'owner' category.
+    """
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+
+        # Only seed if no properties exist
+        cur.execute("SELECT COUNT(*) FROM properties")
+        if cur.fetchone()[0] > 0:
+            print("ℹ️  Hotel structure already seeded, skipping")
+            cur.close()
+            release_connection(conn)
+            return
+
+        # Create property
+        cur.execute("""
+            INSERT INTO properties (name, address, timezone)
+            VALUES (%s, %s, %s)
+            RETURNING id
+        """, (
+            "Hotel Margarita Real",
+            "Av. Aldonza Manrique, Final Calle Camarón, Pampatar, Edo. Nueva Esparta, Venezuela 6316",
+            "America/Caracas",
+        ))
+        property_id = cur.fetchone()[0]
+
+        # Floor definitions: (code, name, sort_order, floor_digit)
+        floor_defs = [
+            ("PB", "Planta Baja", 0, 1),
+            ("P1", "Piso 1", 1, 2),
+            ("P2", "Piso 2", 2, 3),
+            ("PH", "Penthouse", 3, 4),
+        ]
+
+        # Create 6 modules
+        for mod_num in range(1, 7):
+            category = "owner" if mod_num in (1, 6) else "hotel"
+            is_active = mod_num not in (1, 6)  # Owner modules hidden by default
+
+            cur.execute("""
+                INSERT INTO modules (property_id, number, name, category, is_active, sort_order)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                RETURNING id
+            """, (property_id, mod_num, f"Módulo {mod_num}", category, is_active, mod_num))
+            module_id = cur.fetchone()[0]
+
+            # Create 4 floors per module
+            for code, fname, sort_ord, floor_digit in floor_defs:
+                cur.execute("""
+                    INSERT INTO floors (module_id, code, name, is_active, sort_order)
+                    VALUES (%s, %s, %s, TRUE, %s)
+                    RETURNING id
+                """, (module_id, code, fname, sort_ord))
+                floor_id = cur.fetchone()[0]
+
+                # Create rooms: e.g. Module 2, Floor PB (digit 1) => 2101, 2102, ...
+                rooms_per_floor = 4
+                for room_seq in range(1, rooms_per_floor + 1):
+                    room_number = f"{mod_num}{floor_digit}{room_seq:02d}"
+                    cur.execute("""
+                        INSERT INTO rooms (floor_id, room_number, status, category)
+                        VALUES (%s, %s, %s, %s)
+                    """, (floor_id, room_number, "active", category))
+
+        conn.commit()
+        cur.close()
+        release_connection(conn)
+        print("✅ Hotel Margarita Real structure seeded (6 modules, 24 floors, 96 rooms)")
+    except Exception as e:
+        conn.rollback()
+        release_connection(conn)
+        print(f"⚠️  Error seeding hotel structure: {e}")
+
+
+def _seed_part_types():
+    """Seed the default part types if none exist."""
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM part_types")
+        if cur.fetchone()[0] > 0:
+            cur.close()
+            release_connection(conn)
+            return
+
+        parts = [
+            ("Batería", "battery"),
+            ("Motor", "mechanical"),
+            ("Cilindro", "mechanical"),
+            ("Embutido", "mechanical"),
+            ("Galleta", "mechanical"),
+        ]
+        for name, category in parts:
+            cur.execute("INSERT INTO part_types (name, category) VALUES (%s, %s)", (name, category))
+
+        conn.commit()
+        cur.close()
+        release_connection(conn)
+        print("✅ Part types seeded (5 types)")
+    except Exception as e:
+        conn.rollback()
+        release_connection(conn)
+        print(f"⚠️  Error seeding part types: {e}")
+

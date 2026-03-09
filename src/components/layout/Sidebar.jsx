@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, FileSignature, Settings } from 'lucide-react';
+import { Home, FileSignature, Settings, Wrench } from 'lucide-react';
 
 export default function Sidebar() {
     return (
@@ -18,11 +18,15 @@ export default function Sidebar() {
                     <FileSignature className="w-5 h-5" />
                     <span>Firmas</span>
                 </NavLink>
+                <NavLink to="/maintenance" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive ? 'bg-[var(--shadow-none)] text-[var(--color-primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]'}`}>
+                    <Wrench className="w-5 h-5" />
+                    <span>Mantenimiento</span>
+                </NavLink>
                 <NavLink to="/settings" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive ? 'bg-[var(--shadow-none)] text-[var(--color-primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]'}`}>
                     <Settings className="w-5 h-5" />
                     <span>Configuración</span>
                 </NavLink>
-                
+
             </nav>
         </aside>
     );

@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from db import init_db
 from routes.auth import router as auth_router
 from routes.signatures import router as signatures_router
+from routes.structure import router as structure_router
+from routes.maintenance import router as maintenance_router
 
 app = FastAPI(title="HMR API", version="1.0.0")
 
@@ -23,6 +25,8 @@ app.add_middleware(
 # Mount routes
 app.include_router(auth_router)
 app.include_router(signatures_router)
+app.include_router(structure_router)
+app.include_router(maintenance_router)
 
 
 @app.on_event("startup")
