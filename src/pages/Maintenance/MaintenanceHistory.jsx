@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Wrench, Battery, Cog, Plus, Search, Trash2, Calendar,
-    Loader2, AlertCircle, X, ChevronRight, User,
+    Loader2, AlertCircle, X, ChevronRight, ChevronDown, User,
     BarChart3
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -81,6 +81,9 @@ function CreateModal({ onSave, onCancel, saving }) {
     const [activeIdx, setActiveIdx] = useState(-1);
     const inputRef = useRef(null);
 
+    // Part select state
+    const [showPartDropdown, setShowPartDropdown] = useState(false);
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         fetch('/api/structure/rooms?status=active', { headers: { Authorization: `Bearer ${token}` } })
@@ -144,7 +147,7 @@ function CreateModal({ onSave, onCancel, saving }) {
                 <button onClick={onCancel} className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)]">
                     <X className="w-4 h-4" />
                 </button>
-                <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2  py-2">
                     <Wrench className="w-5 h-5 text-[var(--color-primary)]" />
                     Registrar Mantenimiento
                 </h3>
@@ -258,16 +261,56 @@ function CreateModal({ onSave, onCancel, saving }) {
                     {form.type === 'mechanical' && (
                         <div>
                             <label className="text-xs font-medium text-[var(--color-text-secondary)] mb-1 block">Pieza</label>
-                            <select
-                                value={form.part_type_id}
-                                onChange={e => setForm(f => ({ ...f, part_type_id: e.target.value }))}
-                                className="w-full px-3 py-2 text-sm bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                            <div 
+                                className="relative"
+                                onBlur={(e) => {
+                                    if (!e.currentTarget.contains(e.relatedTarget)) setShowPartDropdown(false);
+                                }}
                             >
-                                <option value="">Seleccionar pieza</option>
-                                {filteredParts.map(p => (
-                                    <option key={p.id} value={p.id}>{p.name}</option>
-                                ))}
-                            </select>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPartDropdown(prev => !prev)}
+                                    className="w-full px-3 py-2 text-sm text-left bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:outline-none flex items-center justify-between"
+                                >
+                                    <span className={!form.part_type_id ? "text-[var(--color-text-muted)]" : ""}>
+                                        {form.part_type_id 
+                                            ? filteredParts.find(p => p.id == form.part_type_id)?.name || 'Seleccionar pieza'
+                                            : 'Seleccionar pieza'
+                                        }
+                                    </span>
+                                    <ChevronDown className={`w-4 h-4 text-[var(--color-text-muted)] transition-transform ${showPartDropdown ? 'rotate-180' : ''}`} />
+                                </button>
+                                
+                                {showPartDropdown && (
+                                    <div className="absolute z-20 mt-1 w-full bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-lg shadow-xl overflow-hidden max-h-48 overflow-y-auto">
+                                        <ul className="py-1">
+                                            {filteredParts.length > 0 ? (
+                                                filteredParts.map(p => (
+                                                    <li key={p.id}>
+                                                        <button
+                                                            type="button"
+                                                            onMouseDown={(e) => { 
+                                                                e.preventDefault(); 
+                                                                setForm(f => ({ ...f, part_type_id: p.id }));
+                                                                setShowPartDropdown(false);
+                                                            }}
+                                                            className={`w-full text-left px-3 py-2 text-sm transition-colors ${
+                                                                form.part_type_id == p.id
+                                                                    ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-medium'
+                                                                    : 'hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]'
+                                                            }`}
+                                                        >
+                                                            {p.name}
+                                                        </button>
+                                                    </li>
+                                                ))
+                                            ) : (
+                                                <li className="px-3 py-2.5 text-sm text-[var(--color-text-muted)]">No hay piezas disponibles</li>
+                                            )}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
 
@@ -278,7 +321,7 @@ function CreateModal({ onSave, onCancel, saving }) {
                             type="date"
                             value={form.performed_at}
                             onChange={e => setForm(f => ({ ...f, performed_at: e.target.value }))}
-                            className="w-full px-3 py-2 text-sm bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                            className="w-full px-3 py-2 text-sm bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:outline-none [color-scheme:dark]"
                         />
                     </div>
 
