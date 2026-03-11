@@ -1,77 +1,127 @@
-# HMR (Hotel Management Project)
+# Hotel Margarita Real (HMR) - Intranet & Management System
 
-Proyecto frontend y backend orientado a la hotelería (sistema centralizador de aplicaciones pequeñas integradas).
-Este proyecto utiliza **React + Vite** con **Tailwind CSS** en el frontend, soportado por un backend en **FastAPI** y una base de datos **PostgreSQL**.
+![HMR Banner](public/img/logo-hmr-main-white-.png) <!-- Replace with actual banner if available -->
 
----
-
-## 🚀 Guía Rápida para Levantar el Proyecto (Recomendado)
-
-La forma más sencilla de ejecutar este proyecto en cualquier computadora es a través de **Docker**. Esto garantiza que no tengas problemas de versiones, bases de datos o dependencias locales.
-
-### 📋 Requisitos Previos
-
-Antes de empezar, asegúrate de tener instalado:
-- [Git](https://git-scm.com/downloads)
-- [Docker Desktop](https://docs.docker.com/desktop/) (o Docker y Docker Compose)
-
-### 🛠️ Pasos para Iniciar
-
-1. **Clona el repositorio e ingresa a la carpeta** (si aún no lo has hecho):
-   ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd HMR
-   ```
-
-2. **Levanta todos los servicios**:
-   Ejecuta el siguiente comando en la raíz del proyecto (donde se encuentra el archivo `docker-compose.yml`):
-   ```bash
-   docker-compose up -d --build
-   ```
-   *Nota: La opción `-d` corre los contenedores en segundo plano. La bandera `--build` asegura que se construyan las imágenes con tu código más reciente.*
-
-3. **Accede a la aplicación**:
-   Una vez que los contenedores estén corriendo, abre tu navegador y visita:
-   - 🌐 **Frontend (Aplicación Web):** [http://localhost:5173](http://localhost:5173)
-   - ⚙️ **Backend API (Documentación Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
-
-4. **Para detener el proyecto**:
-   Cuando termines de trabajar, puedes apagar los contenedores y liberar recursos ejecutando:
-   ```bash
-   docker-compose down
-   ```
+HMR es una plataforma moderna e integral diseñada específicamente para cubrir y optimizar los flujos operativos internos del Hotel Margarita Real. Desarrollada con un enfoque central en el **minimalismo**, el rendimiento y la experiencia de usuario (UX/UI).
 
 ---
 
-## 💻 Desarrollo Local Manual (Avanzado, sin usar Docker)
+## 🚀 Filosofía de Diseño y UI/UX
 
-Si por alguna razón prefieres trabajar localmente sin contenedores, deberás levantar el Frontend y Backend por separado:
+El sistema está construido bajo estrictos principios de diseño visual moderno:
+*   **Minimalismo Funcional**: Interfaces limpias que evitan la sobrecarga cognitiva. Menos ruido visual, más eficiencia en el trabajo diario.
+*   **Estética "Glassmorphism" / Soft UI**: Uso de transparencias sutiles, bordes redondeados (border-radius consistentes) interacciones suaves al hacer hover, y fondos limpios.
+*   **Paleta de Colores Corporativa**: Uso predominante del color oficial (`#009098` / `#0f7681`) mezclado con grises suaves para textos secundarios y divisores, manteniendo un aspecto pulido y premium.
+*   **Disposición Modular / Apilada**: Preferencia por layouts horizontales organizados, dashboards inline, y componentes compactos integrados en una misma pantalla (Single Pane of Glass), evitando saltos innecesarios entre rutas.
 
-### 1. Levantar el Frontend (React + Vite)
-Requiere [Node.js](https://nodejs.org/) (versión 18+ recomendada).
-```bash
-# En la raíz del proyecto
-npm install     # Instala todas las dependencias
-npm run dev     # Inicia el servidor de desarrollo Vite
+## 🛠 Tech Stack
+
+### Frontend (User Interface)
+*   **React 19**: Construido con Hooks funcionales y los últimos estándares.
+*   **Vite**: Entorno de desarrollo ultrarrápido y empaquetador eficiente.
+*   **Tailwind CSS (v4)**: Framework de CSS utilitario para un diseño responsivo, estricto y altamente personalizable.
+*   **Lucide React**: Iconografía elegante, minimalista y coherente con el estilo de la aplicación.
+*   **html2canvas**: Renderizado del DOM a imágenes (utilizado en el Generador de Firmas).
+*   **Recharts**: Visualización de datos estadísticos (Dashboards).
+*   **React Router DOM v7**: Manejo de rutas y navegación estilo Single Page Application (SPA).
+
+### Backend (API Server)
+*   **FastAPI (Python)**: Framework asíncrono, moderno y de alto rendimiento para la API REST.
+*   **PostgreSQL**: Motor de base de datos relacional robusto.
+*   **Uvicorn**: Servidor ASGI de producción para Python.
+*   **PyJWT / Bcrypt**: Autenticación segura mediante JSON Web Tokens (JWT) y hasheo de contraseñas.
+*   **Pydantic**: Validación y serialización estricta de datos.
+
+### Infraestructura
+*   **Docker / Docker Compose**: Contenerización completa de los 3 servicios (Frontend, Backend, Database) para garantizar paridad entre desarrollo y producción.
+
+---
+
+## 📂 Módulos Principales (Features)
+
+El sistema actualmente soporta los siguientes módulos core:
+
+1.  **Dashboard de Mantenimiento (Control de Cerraduras)**
+    *   Módulo unificado para el seguimiento de tareas preventivas y correctivas en habitaciones.
+    *   Dashboard en línea con KPI's directos (Alertas predictivas, baterías críticas, reparaciones mecánicas).
+    *   Filtros en tiempo real accionables sobre el historial.
+2.  **Firmas Corporativas**
+    *   Motor de generación dinámica de firmas de correo electrónico corporativo.
+    *   Interfaz con validación de entradas de empleados para homologar el formato del hotel.
+    *   Historial de firmas (CRUD completo) para re-edición y control del departamento de IT/RRHH.
+    *   Previsualización exacta (WYSIWYG) con descarga inteligente (`html2canvas`) ocultando placeholders temporales.
+
+---
+
+## 📁 Estructura del Proyecto
+
+El proyecto sigue una arquitectura clara separando frontend, backend y configuraciones de infraestructura.
+
+```text
+├── .git/
+├── docker-compose.yml         # Orquestación de contenedores (App, API, DB)
+├── Dockerfile                 # Dockerfile para compilar el Frontend (React/Vite)
+├── package.json               # Dependencias del Frontend
+├── tailwind.config.js / postcss.config.js # Configuración de estilos
+├── server/                    # 🐍 BACKEND (FastAPI)
+│   ├── Dockerfile             # Dockerfile para entorno Python
+│   ├── requirements.txt       # Dependencias de Python
+│   ├── main.py                # Entrypoint de FastAPI
+│   ├── app/                   # Código de routers, bases de datos y modelos
+│   └── ...
+├── src/                       # ⚛️ FRONTEND (React)
+│   ├── components/            # Componentes reutilizables modulares (ej. Signatures/, Maintenance/)
+│   ├── context/               # Manejadores de Estado Global (ej. AuthContext)
+│   ├── hooks/                 # Custom Hooks de React (ej. fetching unificado)
+│   ├── pages/                 # Páginas completas/Rutas
+│   ├── index.css              # Variables globales y directivas base
+│   └── main.jsx               # Entrypoint de React
+└── public/                    # Archivos estáticos puramente públicos (imágenes corporativas)
 ```
 
-### 2. Levantar el Backend (FastAPI)
-Requiere [Python 3.9+](https://www.python.org/downloads/).
+---
+
+## ⚙️ Guía de Instalación y Despliegue Local
+
+La forma más rápida de levantar el entorno local de desarrollo para uso inmediato y transparente es a través de Docker.
+
+### Prerrequisitos
+*   [Docker](https://docs.docker.com/get-docker/) y Docker Compose instalados.
+*   Node.js (Opcional, sólo si deseas correr el frontend directamente sin el contenedor).
+
+### Iniciar el entorno (Vía Docker)
+
+1.  **Clona o navega al directorio del repositorio:**
+    ```bash
+    cd "HMR"
+    ```
+
+2.  **Construye y levanta todos los contenedores:**
+    Este comando descargará las imágenes de Postgres, Python y Node, instalará dependencias e iniciará los 3 servicios simultáneamente.
+    ```bash
+    docker-compose up -d --build
+    ```
+
+3.  **Verificar Servicios:**
+    *   **Frontend (React):** Disponible en [http://localhost:5173](http://localhost:5173)
+    *   **Backend (FastAPI):** Disponible en [http://localhost:8000/docs](http://localhost:8000/docs) (Swagger UI automático).
+    *   **Database (Postgres):** Accesible internamente por la red de Docker en el puerto 5432 (expuesto externamente en modo dev `15432`).
+
+4.  **Para detener el entorno:**
+    ```bash
+    docker-compose down
+    ```
+
+### Iniciar el Frontend (Vía Node.js Nativo - Opcional)
+
+Si deseas hacer cambios exclusivos visuales en el UI sin depender del reinicio del contenedor frontend:
+
 ```bash
-# Entra a la carpeta del servidor
-cd server
+# 1. Instalar dependencias
+npm install
 
-# Crea y activa un entorno virtual (recomendado)
-python -m venv venv
-# Activar en Windows:
-venv\Scripts\activate
-# Activar en Linux/Mac:
-source venv/bin/activate
-
-# Instala los requerimientos
-pip install -r requirements.txt
-
-# Inicia el servidor
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+# 2. Correr el servidor de desarrollo en caliente
+npm run dev
 ```
-> **Atención:** Para que el backend funcione localmente sin Docker, deberás tener una base de datos PostgreSQL corriendo en tu PC y configurar las variables de entorno (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, etc.) adecuadamente. Por eso **se recomienda fuertemente usar Docker**.
+
+*(Recuerda que debes tener corriendo el backend `docker-compose up -d hmr-backend postgres` para realizar peticiones reales)*.

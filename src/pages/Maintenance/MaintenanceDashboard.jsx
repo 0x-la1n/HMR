@@ -4,52 +4,17 @@ import {
     ArrowLeft, AlertTriangle, Battery, Shield, Activity,
     DoorOpen, Loader2, AlertCircle, ChevronRight
 } from 'lucide-react';
-
-function formatDate(iso) {
-    if (!iso) return '—';
-    return new Date(iso).toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-function HealthBar({ score }) {
-    const color = score >= 70 ? 'bg-green-500' : score >= 40 ? 'bg-yellow-500' : 'bg-red-500';
-    return (
-        <div className="flex items-center gap-2">
-            <div className="flex-1 h-2 bg-[var(--color-bg-tertiary)] rounded-full overflow-hidden">
-                <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${score}%` }} />
-            </div>
-            <span className="text-xs font-medium text-[var(--color-text-muted)] w-8 text-right">{score}%</span>
-        </div>
-    );
-}
+import { formatDate } from '../../utils/formatters';
+import { HealthBar } from '../../components/Maintenance/MaintenanceComponents';
+import { useMaintenanceDashboard } from '../../hooks/useMaintenance';
 
 export default function MaintenanceDashboard() {
     const navigate = useNavigate();
-    const [alerts, setAlerts] = useState([]);
-    const [stats, setStats] = useState(null);
-    const [predictions, setPredictions] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { alerts, stats, predictions, loading, fetchDashboardData } = useMaintenanceDashboard();
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
-            const [aRes, sRes, pRes] = await Promise.all([
-                fetch('/api/maintenance/alerts?threshold=15', { headers }),
-                fetch('/api/maintenance/stats', { headers }),
-                fetch('/api/maintenance/predictions', { headers }),
-            ]);
-            const aData = await aRes.json();
-            const sData = await sRes.json();
-            const pData = await pRes.json();
-            setAlerts(aData.alerts || []);
-            setStats(sData.stats || null);
-            setPredictions(pData.predictions || []);
-        } catch { }
-        finally { setLoading(false); }
-    }, []);
-
-    useEffect(() => { fetchData(); }, [fetchData]);
+    useEffect(() => { 
+        fetchDashboardData(); 
+    }, [fetchDashboardData]);
 
     // Group predictions by health range
     const critical = predictions.filter(p => p.health_score < 30).length;

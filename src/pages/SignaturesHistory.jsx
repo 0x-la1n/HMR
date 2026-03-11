@@ -257,8 +257,8 @@ export default function SignaturesHistory() {
             <div className="mx-auto max-w-auto">
 
                 {/* ── Header ── */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                    <div className="mb-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
                         <div className="flex items-center gap-3 mb-1">
                             <div className="p-2.5 rounded-xl bg-[var(--color-primary)]/10">
                                 <FileSignature className="w-6 h-6 text-[var(--color-primary)]" />
@@ -271,13 +271,34 @@ export default function SignaturesHistory() {
                             Historial y gestión de firmas del equipo
                         </p>
                     </div>
-                    <button
-                        onClick={() => navigate('/signatures/new')}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-light)] text-white text-sm font-medium rounded-xl transition-colors shadow-sm shrink-0"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Nueva Firma
-                    </button>
+
+                    {/* Right: Search & Action */}
+                    <div className="flex items-center gap-3">
+                        {signatures.length > 0 && (
+                            <div className="relative flex-1 sm:w-64">
+                                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+                                <input
+                                    type="text"
+                                    value={search}
+                                    onChange={e => setSearch(e.target.value)}
+                                    placeholder="Buscar por nombre, cargo..."
+                                    className="w-full pl-10 pr-10 py-2.5 text-sm bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:outline-none transition-colors"
+                                />
+                                {search && (
+                                    <button onClick={() => setSearch('')} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                        <button
+                            onClick={() => navigate('/signatures/new')}
+                            className="flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-light)] text-white text-sm font-medium rounded-xl transition-colors shadow-sm shrink-0"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Nueva Firma
+                        </button>
+                    </div>
                 </div>
 
                 {/* ── Stats ── */}
@@ -286,24 +307,7 @@ export default function SignaturesHistory() {
                     <StatCard icon={TrendingUp} label="Este mes" value={thisMonth} color="#0f7681" />
                 </div>
 
-                {/* ── Search ── */}
-                {signatures.length > 0 && (
-                    <div className="relative mb-5">
-                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                            placeholder="Buscar por nombre, cargo o correo…"
-                            className="w-full pl-10 pr-10 py-2.5 text-sm bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:outline-none transition-colors"
-                        />
-                        {search && (
-                            <button onClick={() => setSearch('')} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]">
-                                <X className="w-4 h-4" />
-                            </button>
-                        )}
-                    </div>
-                )}
+
 
                 {/* ── Content ── */}
                 {loading ? (
@@ -338,6 +342,7 @@ export default function SignaturesHistory() {
                                         <th className="py-2 px-2 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">Nombre y Apellido</th>
                                         <th className="py-2 px-2 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">Departamento/Cargo</th>
                                         <th className="py-2 px-2 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">Correo</th>
+                                        <th className="py-2 px-2 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">Fecha</th>
                                         <th className="py-2 pl-2 pr-3 w-20"></th>
                                     </tr>
                                 </thead>
