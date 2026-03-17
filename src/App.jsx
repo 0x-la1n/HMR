@@ -11,6 +11,10 @@ import SignaturesHistory from './pages/SignaturesHistory';
 import MaintenanceHistory from './pages/Maintenance/MaintenanceHistory';
 import MaintenanceDashboard from './pages/Maintenance/MaintenanceDashboard';
 import RoomTimeline from './pages/Maintenance/RoomTimeline';
+import RoomsMaintenance from './pages/Maintenance/RoomsMaintenance';
+import VehicleControl from './pages/Security/VehicleControl';
+import Linen from './pages/Housekeeping/Linen';
+import Reservations from './pages/Reception/Reservations';
 
 /**
  * App - Componente raíz de la aplicación
@@ -41,6 +45,10 @@ function App() {
                         <Route path="maintenance" element={<MaintenanceHistory />} />
                         <Route path="maintenance/dashboard" element={<MaintenanceDashboard />} />
                         <Route path="maintenance/room/:id" element={<RoomTimeline />} />
+                        <Route path="maintenance/rooms" element={<RoomsMaintenance />} />
+                        <Route path="security/vehicle-control" element={<VehicleControl />} />
+                        <Route path="housekeeping/lenceria" element={<Linen />} />
+                        <Route path="reception/reservas" element={<Reservations />} />
                         <Route path="settings" element={<Settings />} />
                     </Route>
 
