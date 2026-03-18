@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, FileSignature, Settings, Wrench, ChevronDown, Shield, BedDouble, Hotel } from 'lucide-react';
+import { Home, Settings, Wrench, ChevronDown, Shield, BedDouble, Hotel } from 'lucide-react';
 
 export default function Sidebar() {
     const location = useLocation();
-    const isSystemsActive = location.pathname.startsWith('/signatures') || location.pathname.startsWith('/settings');
+    const isSystemsActive = location.pathname.startsWith('/signatures');
     const [isSystemsOpen, setIsSystemsOpen] = useState(isSystemsActive);
     const isMaintenanceActive = location.pathname.startsWith('/maintenance');
     const [isMaintenanceOpen, setIsMaintenanceOpen] = useState(isMaintenanceActive);
@@ -41,17 +41,18 @@ export default function Sidebar() {
         }
     }, [isReceptionActive]);
     return (
-        <aside className="w-64 bg-[var(--color-bg-secondary)] border-r border-[var(--color-border)] hidden md:block h-full flex-shrink-0">
+        <aside className="w-64 bg-[var(--color-bg-secondary)] border-r border-[var(--color-border)] hidden md:flex h-full flex-shrink-0 flex-col">
             <div className="p-4 border-b border-[var(--color-border)] h-16 flex items-center">
                 <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
                     HMR<span className="text-[var(--color-primary)]"> System</span>
                 </h2>
             </div>
-            <nav className="p-4 space-y-2">
-                <NavLink to="/" end className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive ? 'bg-[var(--shadow-none)] text-[var(--color-primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]'}`}>
-                    <Home className="w-5 h-5" />
-                    <span>Dashboard</span>
-                </NavLink>
+            <nav className="p-4 flex-1 flex flex-col">
+                <div className="space-y-2">
+                    <NavLink to="/" end className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive ? 'bg-[var(--shadow-none)] text-[var(--color-primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]'}`}>
+                        <Home className="w-5 h-5" />
+                        <span>Dashboard</span>
+                    </NavLink>
                 {/* Dropdown Recepción */}
                 <div>
                     <button
@@ -246,25 +247,25 @@ export default function Sidebar() {
                                     </>
                                 )}
                             </NavLink>
-                            <NavLink
-                                to="/settings"
-                                className={({ isActive }) =>
-                                    `group flex items-center gap-3 py-2 pl-11 pr-3 text-sm rounded-lg transition-colors ${
-                                        isActive
-                                            ? 'text-[var(--color-text-primary)] font-medium bg-[var(--color-bg-tertiary)]/50'
-                                            : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]/30'
-                                    }`
-                                }
-                            >
-                                {({ isActive }) => (
-                                    <>
-                                        <div className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-text-muted)] group-hover:bg-[var(--color-text-secondary)]'}`} />
-                                        <span>Configuración</span>
-                                    </>
-                                )}
-                            </NavLink>
                         </div>
                     </div>
+                </div>
+                </div>
+
+                <div className="mt-auto pt-4">
+                    <NavLink
+                        to="/settings"
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 px-3 py-2 rounded-lg border transition-colors ${
+                                isActive
+                                    ? 'border-[var(--color-border)] bg-[var(--color-bg-tertiary)] text-[var(--color-primary)]'
+                                    : 'border-[var(--color-border)]/60 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]'
+                            }`
+                        }
+                    >
+                        <Settings className="w-5 h-5" />
+                        <span>Configuración</span>
+                    </NavLink>
                 </div>
 
             </nav>

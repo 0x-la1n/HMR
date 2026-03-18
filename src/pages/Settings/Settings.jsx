@@ -1,21 +1,9 @@
 import React, { useState } from 'react';
 import { Settings as SettingsIcon, Users, Globe, Link as LinkIcon, Building2 } from 'lucide-react';
 import HotelStructureTab from './HotelStructureTab';
+import GeneralTab from './GeneralTab';
 
 // Simple mock components for the new tabs
-function GeneralTab() {
-    return (
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Configuración General</h3>
-            <p className="text-[var(--color-text-secondary)]">Ajustes generales del sistema HMR.</p>
-            <div className="p-4 bg-[var(--color-bg-tertiary)] rounded-lg border border-[var(--color-border)]">
-                <p>Nombre del Hotel: <strong>Hotel Horizonte</strong></p>
-                <p>Zona Horaria: <strong>America/Caracas</strong></p>
-            </div>
-        </div>
-    );
-}
-
 function IntegrationsTab() {
     return (
         <div className="space-y-4">
