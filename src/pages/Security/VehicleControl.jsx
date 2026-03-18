@@ -1,87 +1,18 @@
 import React, { useState } from 'react';
-import { Shield, Car, Users, ClipboardList, Wrench, BarChart3 } from 'lucide-react';
-
-function OverviewTab() {
-    return (
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Vista General</h3>
-            <p className="text-[var(--color-text-secondary)]">Ajustes generales del sistema HMR.</p>
-            <div className="p-4 bg-[var(--color-bg-tertiary)] rounded-lg border border-[var(--color-border)]">
-                <p>Nombre del Hotel: <strong>Hotel Horizonte</strong></p>
-                <p>Zona Horaria: <strong>America/Caracas</strong></p>
-            </div>
-        </div>
-    );
-}
-
-function InventoryTab() {
-    return (
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Inventario</h3>
-            <p className="text-[var(--color-text-secondary)]">Gestión del inventario de vehículos.</p>
-            <div className="p-4 bg-[var(--color-bg-tertiary)] rounded-lg border border-[var(--color-border)]">
-                <p>Nombre del Hotel: <strong>Hotel Horizonte</strong></p>
-                <p>Zona Horaria: <strong>America/Caracas</strong></p>   
-            </div>
-        </div>
-    );
-}
-
-function DriversTab() {
-    return (
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Choferes</h3>
-            <p className="text-[var(--color-text-secondary)]">Gestión de los choferes del sistema.</p>
-            <div className="p-4 bg-[var(--color-bg-tertiary)] rounded-lg border border-[var(--color-border)]">
-                <p>Nombre del Hotel: <strong>Hotel Horizonte</strong></p>
-                <p>Zona Horaria: <strong>America/Caracas</strong></p>   
-            </div>
-        </div>
-    );
-}
-
-function DailyLogsTab() {
-    return (
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Bitácora Diaria</h3>
-            <p className="text-[var(--color-text-secondary)]">Registro de actividades diarias.</p>
-            <div className="p-4 bg-[var(--color-bg-tertiary)] rounded-lg border border-[var(--color-border)]">
-                <p>Nombre del Hotel: <strong>Hotel Horizonte</strong></p>
-                <p>Zona Horaria: <strong>America/Caracas</strong></p>   
-            </div>
-        </div>
-    );
-}
-
-function MaintenanceTab() {
-    return (
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Mantenimiento</h3>
-            <p className="text-[var(--color-text-secondary)]">Gestión del inventario de vehículos.</p>
-            <div className="p-4 bg-[var(--color-bg-tertiary)] rounded-lg border border-[var(--color-border)]">
-                <p>Nombre del Hotel: <strong>Hotel Horizonte</strong></p>
-                <p>Zona Horaria: <strong>America/Caracas</strong></p>   
-            </div>
-        </div>
-    );
-}
-
-function AnalyticsTab() {
-    return (
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Analíticas</h3>
-            <p className="text-[var(--color-text-secondary)]">Gestión del inventario de vehículos.</p>
-            <div className="p-4 bg-[var(--color-bg-tertiary)] rounded-lg border border-[var(--color-border)]">
-                <p>Nombre del Hotel: <strong>Hotel Horizonte</strong></p>
-                <p>Zona Horaria: <strong>America/Caracas</strong></p>   
-            </div>
-        </div>
-    );
-}
-
-
-
-
+import { 
+    Shield, 
+    Car, 
+    Users, 
+    ClipboardList, 
+    Wrench, 
+    BarChart3
+} from 'lucide-react';
+import OverviewTab from '../../components/Security/OverviewTab';
+import InventoryTab from '../../components/Security/InventoryTab';
+import DriversTab from '../../components/Security/DriversTab';
+import DailyLogsTab from '../../components/Security/DailyLogsTab';
+import MaintenanceTab from '../../components/Security/MaintenanceTab';
+import FinancialAnalyticsTab from '../../components/Security/FinancialAnalyticsTab';
 
 export default function VehicleControl() {
     const [activeTab, setActiveTab] = useState('overview');
@@ -92,7 +23,7 @@ export default function VehicleControl() {
         { id: 'drivers', label: 'Choferes', icon: Users, component: DriversTab },
         { id: 'dailylogs', label: 'Bitácora Diaria', icon: ClipboardList, component: DailyLogsTab },
         { id: 'maintenance', label: 'Mantenimiento', icon: Wrench, component: MaintenanceTab },
-        { id: 'analytics', label: 'Analíticas', icon: BarChart3, component: AnalyticsTab },
+        { id: 'analytics', label: 'Analíticas', icon: BarChart3, component: FinancialAnalyticsTab },
     ];
 
     return (
@@ -143,5 +74,3 @@ export default function VehicleControl() {
         </div>
     );
 }
-
-
