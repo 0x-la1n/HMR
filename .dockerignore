@@ -1,4 +1,12 @@
 node_modules
 dist
 .git
+.gitignore
+__pycache__
+server/__pycache__
+server/**/*.pyc
+*.log
+.DS_Storenode_modules
+dist
+.git
 .env

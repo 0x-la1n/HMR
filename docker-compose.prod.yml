@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-hmr}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hmr_secret}
+      POSTGRES_DB: ${DB_NAME:-hmr_db}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  hmr-backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-hmr}
+      - DB_PASSWORD=${DB_PASSWORD:-hmr_secret}
+      - DB_NAME=${DB_NAME:-hmr_db}
+      - JWT_SECRET=${JWT_SECRET:-hmr-jwt-secret-change-in-production}
+    depends_on:
+      - postgres
+
+  hmr-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - hmr-backend
+
+volumes:
+  pgdata:

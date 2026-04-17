@@ -96,14 +96,14 @@ La forma más rápida de levantar el entorno local de desarrollo para uso inmedi
     cd "HMR"
     ```
 
-2.  **Construye y levanta todos los contenedores:**
-    Este comando descargará las imágenes de Postgres, Python y Node, instalará dependencias e iniciará los 3 servicios simultáneamente.
+2.  **Construye y levanta el entorno de desarrollo:**
+    Este comando descarga las imágenes de Postgres, Python y Node, instala dependencias e inicia los 3 servicios con Vite en modo desarrollo.
     ```bash
     docker-compose up -d --build
     ```
 
 3.  **Verificar Servicios:**
-    *   **Frontend (React):** Disponible en [http://localhost:5173](http://localhost:5173)
+    *   **Frontend (React/Vite):** Disponible en [http://localhost:5173](http://localhost:5173)
     *   **Backend (FastAPI):** Disponible en [http://localhost:8000/docs](http://localhost:8000/docs) (Swagger UI automático).
     *   **Database (Postgres):** Accesible internamente por la red de Docker en el puerto 5432 (expuesto externamente en modo dev `15432`).
 
@@ -111,6 +111,32 @@ La forma más rápida de levantar el entorno local de desarrollo para uso inmedi
     ```bash
     docker-compose down
     ```
+
+### Iniciar el entorno de Producción
+
+Si quieres una versión lista para despliegue, el frontend se compila y se sirve con Nginx en el puerto 80.
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+En este modo:
+
+*   El frontend se sirve en [http://localhost](http://localhost).
+*   Las rutas SPA se resuelven desde Nginx.
+*   Las llamadas a `/api` se proxyan al backend FastAPI dentro de Docker.
+*   El backend y PostgreSQL quedan internos en la red de Docker; no se exponen al host por defecto.
+
+Para apagarlo:
+
+```bash
+docker compose -f docker-compose.prod.yml down
+```
+
+### Cómo elegir desarrollo o producción
+
+*   Usa `docker-compose up -d --build` cuando estés programando y quieras hot reload en `5173`.
+*   Usa `docker compose -f docker-compose.prod.yml up -d --build` cuando quieras simular o desplegar el sistema como usuario final.
 
 ### Iniciar el Frontend (Vía Node.js Nativo - Opcional)
 
