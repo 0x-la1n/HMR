@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Wrench, Battery, Cog, Plus, Search, X, Loader2, ChevronDown } from 'lucide-react';
+import { Wrench, Battery, Cog, Plus, Search, X, Loader2 } from 'lucide-react';
+import CustomDropdown from '../common/CustomDropdown';
 
 export default function CreateMaintenanceModal({ onSave, onCancel, saving }) {
     const [rooms, setRooms] = useState([]);
@@ -16,9 +17,6 @@ export default function CreateMaintenanceModal({ onSave, onCancel, saving }) {
     const [activeIdx, setActiveIdx] = useState(-1);
     const inputRef = useRef(null);
 
-    // Part select state
-    const [showPartDropdown, setShowPartDropdown] = useState(false);
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         fetch('/api/structure/rooms?status=active', { headers: { Authorization: `Bearer ${token}` } })
@@ -28,6 +26,7 @@ export default function CreateMaintenanceModal({ onSave, onCancel, saving }) {
     }, []);
 
     const filteredParts = partTypes.filter(p => p.category === form.type);
+    const partOptions = filteredParts.map((p) => ({ value: String(p.id), label: p.name }));
 
     // Live suggestions: exact prefix first, then contains, max 8
     const suggestions = roomQuery.length > 0
@@ -220,56 +219,14 @@ export default function CreateMaintenanceModal({ onSave, onCancel, saving }) {
                     {form.type === 'mechanical' && (
                         <div>
                             <label className="text-xs font-medium text-[var(--color-text-secondary)] mb-1 block">Pieza</label>
-                            <div 
-                                className="relative"
-                                onBlur={(e) => {
-                                    if (!e.currentTarget.contains(e.relatedTarget)) setShowPartDropdown(false);
-                                }}
-                            >
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPartDropdown(prev => !prev)}
-                                    className="w-full px-3 py-2 text-sm text-left bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:outline-none flex items-center justify-between"
-                                >
-                                    <span className={!form.part_type_id ? "text-[var(--color-text-muted)]" : ""}>
-                                        {form.part_type_id 
-                                            ? filteredParts.find(p => p.id == form.part_type_id)?.name || 'Seleccionar pieza'
-                                            : 'Seleccionar pieza'
-                                        }
-                                    </span>
-                                    <ChevronDown className={`w-4 h-4 text-[var(--color-text-muted)] transition-transform ${showPartDropdown ? 'rotate-180' : ''}`} />
-                                </button>
-                                
-                                {showPartDropdown && (
-                                    <div className="absolute z-20 mt-1 w-full bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-lg shadow-xl overflow-hidden max-h-48 overflow-y-auto">
-                                        <ul className="py-1">
-                                            {filteredParts.length > 0 ? (
-                                                filteredParts.map(p => (
-                                                    <li key={p.id}>
-                                                        <button
-                                                            type="button"
-                                                            onMouseDown={(e) => { 
-                                                                e.preventDefault(); 
-                                                                setForm(f => ({ ...f, part_type_id: p.id }));
-                                                                setShowPartDropdown(false);
-                                                            }}
-                                                            className={`w-full text-left px-3 py-2 text-sm transition-colors ${
-                                                                form.part_type_id == p.id
-                                                                    ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-medium'
-                                                                    : 'hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]'
-                                                            }`}
-                                                        >
-                                                            {p.name}
-                                                        </button>
-                                                    </li>
-                                                ))
-                                            ) : (
-                                                <li className="px-3 py-2.5 text-sm text-[var(--color-text-muted)]">No hay piezas disponibles</li>
-                                            )}
-                                        </ul>
-                                    </div>
-                                )}
-                            </div>
+                            <CustomDropdown
+                                value={form.part_type_id ? String(form.part_type_id) : ''}
+                                onChange={(value) => setForm((f) => ({ ...f, part_type_id: value }))}
+                                options={partOptions}
+                                placeholder="Seleccionar pieza"
+                                emptyText="No hay piezas disponibles"
+                                className="[&>button]:bg-[var(--color-bg-tertiary)]"
+                            />
                         </div>
                     )}
 

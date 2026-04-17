@@ -6,14 +6,6 @@ HMR es una plataforma moderna e integral diseñada específicamente para cubrir 
 
 ---
 
-## 🚀 Filosofía de Diseño y UI/UX
-
-El sistema está construido bajo estrictos principios de diseño visual moderno:
-*   **Minimalismo Funcional**: Interfaces limpias que evitan la sobrecarga cognitiva. Menos ruido visual, más eficiencia en el trabajo diario.
-*   **Estética "Glassmorphism" / Soft UI**: Uso de transparencias sutiles, bordes redondeados (border-radius consistentes) interacciones suaves al hacer hover, y fondos limpios.
-*   **Paleta de Colores Corporativa**: Uso predominante del color oficial (`#009098` / `#0f7681`) mezclado con grises suaves para textos secundarios y divisores, manteniendo un aspecto pulido y premium.
-*   **Disposición Modular / Apilada**: Preferencia por layouts horizontales organizados, dashboards inline, y componentes compactos integrados en una misma pantalla (Single Pane of Glass), evitando saltos innecesarios entre rutas.
-
 ## 🛠 Tech Stack
 
 ### Frontend (User Interface)
@@ -34,22 +26,6 @@ El sistema está construido bajo estrictos principios de diseño visual moderno:
 
 ### Infraestructura
 *   **Docker / Docker Compose**: Contenerización completa de los 3 servicios (Frontend, Backend, Database) para garantizar paridad entre desarrollo y producción.
-
----
-
-## 📂 Módulos Principales (Features)
-
-El sistema actualmente soporta los siguientes módulos core:
-
-1.  **Dashboard de Mantenimiento (Control de Cerraduras)**
-    *   Módulo unificado para el seguimiento de tareas preventivas y correctivas en habitaciones.
-    *   Dashboard en línea con KPI's directos (Alertas predictivas, baterías críticas, reparaciones mecánicas).
-    *   Filtros en tiempo real accionables sobre el historial.
-2.  **Firmas Corporativas**
-    *   Motor de generación dinámica de firmas de correo electrónico corporativo.
-    *   Interfaz con validación de entradas de empleados para homologar el formato del hotel.
-    *   Historial de firmas (CRUD completo) para re-edición y control del departamento de IT/RRHH.
-    *   Previsualización exacta (WYSIWYG) con descarga inteligente (`html2canvas`) ocultando placeholders temporales.
 
 ---
 

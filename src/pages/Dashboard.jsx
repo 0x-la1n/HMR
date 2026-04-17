@@ -265,55 +265,6 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
                 </div>
-
-                {/* Recent Activity */}
-                <Card padding="none">
-                    <div className="p-6 border-b border-[var(--color-border)]">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className="text-lg font-semibold">Actividad Reciente</h3>
-                                <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                                    Últimos eventos en todas las aplicaciones
-                                </p>
-                            </div>
-                            <Button variant="ghost" size="sm">
-                                Ver todo
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="divide-y divide-[var(--color-border)]">
-                        {recentActivity.map((activity, index) => (
-                            <div
-                                key={index}
-                                className="px-6 py-4 flex items-center justify-between hover:bg-[var(--color-bg-tertiary)] transition-colors"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="p-2 bg-[var(--color-bg-tertiary)] rounded-lg">
-                                        {getActivityIcon(activity.type)}
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium text-[var(--color-text-primary)]">
-                                            {getActivityLabel(activity.type)}
-                                        </p>
-                                        <p className="text-sm text-[var(--color-text-muted)]">
-                                            {activity.user}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-sm text-[var(--color-text-secondary)]">
-                                        Módulo: {activity.app}
-                                    </p>
-                                    <p className="text-xs text-[var(--color-text-muted)] flex items-center gap-1 justify-end mt-0.5">
-                                        <Clock className="w-3 h-3" />
-                                        {activity.time}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </Card>
             </div>
         </div>
     );

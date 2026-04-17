@@ -60,7 +60,7 @@ export default function Settings() {
                 </div>
             </div>
 
-            <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border)] shadow-sm overflow-hidden">
+            <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border)] shadow-sm overflow-visible">
                 <div className="border-b border-[var(--color-border)]">
                     <nav className="flex overflow-x-auto" aria-label="Tabs">
                         {tabs.map((tab) => {

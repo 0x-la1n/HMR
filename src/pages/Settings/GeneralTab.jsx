@@ -1,11 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Globe, Building2, UploadCloud, Save } from 'lucide-react';
+import CustomDropdown from '../../components/common/CustomDropdown';
+
+const STORAGE_KEY = 'hmr_general_profile';
+
+const EMPTY_PROFILE = {
+    commercialName: '',
+    category: '',
+    slogan: '',
+    legalName: '',
+    rif: '',
+    fiscalAddress: '',
+    receptionPhone: '',
+    officialEmail: '',
+    timezone: '',
+    website: '',
+};
+
+const CATEGORY_OPTIONS = [
+    { value: '5', label: '5 Estrellas' },
+    { value: '4', label: '4 Estrellas' },
+    { value: '3', label: '3 Estrellas' },
+    { value: 'boutique', label: 'Hotel Boutique' },
+    { value: 'resort', label: 'Resort' },
+    { value: 'posada', label: 'Posada' },
+];
+
+const TIMEZONE_OPTIONS = [
+    { value: 'America/Caracas', label: 'America/Caracas (GMT-4)' },
+    { value: 'America/Bogota', label: 'America/Bogota (GMT-5)' },
+    { value: 'America/New_York', label: 'America/New_York (GMT-5)' },
+    { value: 'Europe/Madrid', label: 'Europe/Madrid (GMT+1)' },
+];
+
+function normalizeProfile(profile = {}) {
+    return {
+        commercialName: profile.commercialName ?? '',
+        category: profile.category ?? '',
+        slogan: profile.slogan ?? '',
+        legalName: profile.legalName ?? '',
+        rif: profile.rif ?? '',
+        fiscalAddress: profile.fiscalAddress ?? '',
+        receptionPhone: profile.receptionPhone ?? '',
+        officialEmail: profile.officialEmail ?? '',
+        timezone: profile.timezone ?? '',
+        website: profile.website ?? '',
+    };
+}
 
 /**
  * Subcomponent to render form fields with a label.
  * Reduces code repetition and maintains consistent styling.
  */
-function InputGroup({ label, defaultValue, type = "text", placeholder, className = "", colSpan = "", icon: Icon }) {
+function InputGroup({ label, value, onChange, type = "text", placeholder, className = "", colSpan = "", icon: Icon }) {
     return (
         <div className={`flex flex-col gap-1.5 ${colSpan} ${className}`}>
             <label className="text-sm font-medium text-[var(--color-text-primary)]">
@@ -19,7 +66,8 @@ function InputGroup({ label, defaultValue, type = "text", placeholder, className
                 )}
                 <input
                     type={type}
-                    defaultValue={defaultValue}
+                    value={value}
+                    onChange={onChange}
                     placeholder={placeholder}
                     className={`
                         w-full bg-[var(--color-bg-primary)] border border-[var(--color-border)]
@@ -41,6 +89,66 @@ function InputGroup({ label, defaultValue, type = "text", placeholder, className
  */
 export default function GeneralTab() {
     const [isDragging, setIsDragging] = useState(false);
+    const [formData, setFormData] = useState(EMPTY_PROFILE);
+    const [savedData, setSavedData] = useState(EMPTY_PROFILE);
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveStatus, setSaveStatus] = useState(null); // null | saved | error
+
+    useEffect(() => {
+        const storedProfile = localStorage.getItem(STORAGE_KEY);
+        if (!storedProfile) {
+            setFormData(EMPTY_PROFILE);
+            setSavedData(EMPTY_PROFILE);
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(storedProfile);
+            const normalized = normalizeProfile(parsed);
+            setFormData(normalized);
+            setSavedData(normalized);
+        } catch {
+            setFormData(EMPTY_PROFILE);
+            setSavedData(EMPTY_PROFILE);
+        }
+    }, []);
+
+    const hasChanges = useMemo(
+        () => JSON.stringify(formData) !== JSON.stringify(savedData),
+        [formData, savedData],
+    );
+
+    const handleFieldChange = (field) => (e) => {
+        const value = e.target.value;
+        setFormData((prev) => ({ ...prev, [field]: value }));
+        if (saveStatus) {
+            setSaveStatus(null);
+        }
+    };
+
+    const handleSelectChange = (field) => (value) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+        if (saveStatus) {
+            setSaveStatus(null);
+        }
+    };
+
+    const handleSave = () => {
+        if (!hasChanges || isSaving) {
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+            setSavedData(formData);
+            setSaveStatus('saved');
+        } catch {
+            setSaveStatus('error');
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -66,18 +174,26 @@ export default function GeneralTab() {
                     <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">
                         Perfil Corporativo del Hotel
                     </h2>
-                    <p className="text-sm text-[var(--color-text-secondary)] mt-1">
-                        Gestiona la identidad visual, información fiscal y datos de contacto públicos.
-                    </p>
                 </div>
-                <button className="flex items-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-4 py-2 rounded-full font-medium shadow-sm transition-colors active:scale-95">
+                <button
+                    onClick={handleSave}
+                    disabled={!hasChanges || isSaving}
+                    className="flex items-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-4 py-2 rounded-full font-medium shadow-sm transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[var(--color-primary)]"
+                >
                     <Save size={18} />
-                    <span>Guardar Cambios</span>
+                    <span>{isSaving ? 'Guardando...' : 'Guardar Cambios'}</span>
                 </button>
             </div>
 
+            {saveStatus === 'saved' && (
+                <p className="text-sm text-[var(--color-success)]">Cambios guardados correctamente.</p>
+            )}
+            {saveStatus === 'error' && (
+                <p className="text-sm text-[var(--color-danger)]">No se pudo guardar. Intenta nuevamente.</p>
+            )}
+
             {/* ── Bloque 1: Identidad Visual (Branding) ────────────────────────── */}
-            <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border)] overflow-hidden shadow-sm">
+            <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border)] overflow-visible shadow-sm">
                 <div className="p-4 border-b border-[var(--color-border)] flex items-center gap-3 bg-[var(--color-bg-tertiary)]/30">
                     <div className="p-2 bg-blue-500/10 rounded-lg text-blue-600">
                         <Globe size={20} />
@@ -123,7 +239,8 @@ export default function GeneralTab() {
                     <div className="lg:col-span-2 space-y-5">
                         <InputGroup 
                             label="Nombre Comercial" 
-                            defaultValue="Hotel Horizonte" 
+                            value={formData.commercialName}
+                            onChange={handleFieldChange('commercialName')}
                             placeholder="Ej. Grand Hotel Central"
                         />
                         
@@ -131,19 +248,18 @@ export default function GeneralTab() {
                             <label className="text-sm font-medium text-[var(--color-text-primary)]">
                                 Categoría Oficial
                             </label>
-                            <select className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-sm rounded-lg px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]">
-                                <option value="5">5 Estrellas</option>
-                                <option value="4">4 Estrellas</option>
-                                <option value="3">3 Estrellas</option>
-                                <option value="boutique">Hotel Boutique</option>
-                                <option value="resort">Resort</option>
-                                <option value="posada">Posada</option>
-                            </select>
+                            <CustomDropdown
+                                value={formData.category}
+                                onChange={handleSelectChange('category')}
+                                options={CATEGORY_OPTIONS}
+                                placeholder="Seleccionar categoría"
+                            />
                         </div>
 
                         <InputGroup 
                             label="Eslogan Comercial" 
-                            defaultValue="Donde el descanso encuentra el horizonte." 
+                            value={formData.slogan}
+                            onChange={handleFieldChange('slogan')}
                             placeholder="Frase corta que define tu marca"
                         />
                     </div>
@@ -151,7 +267,7 @@ export default function GeneralTab() {
             </div>
 
             {/* ── Bloque 2: Datos Fiscales y Contacto ──────────────────────────── */}
-            <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border)] overflow-hidden shadow-sm">
+            <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border)] overflow-visible shadow-sm">
                 <div className="p-4 border-b border-[var(--color-border)] flex items-center gap-3 bg-[var(--color-bg-tertiary)]/30">
                     <div className="p-2 bg-purple-500/10 rounded-lg text-purple-600">
                         <Building2 size={20} />
@@ -164,13 +280,15 @@ export default function GeneralTab() {
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
                     <InputGroup 
                         label="Razón Social (Empresa)" 
-                        defaultValue="Inversiones Horizonte C.A." 
+                        value={formData.legalName}
+                        onChange={handleFieldChange('legalName')}
                         placeholder="Nombre legal completo"
                     />
                     
                     <InputGroup 
                         label="Registro de Información Fiscal (RIF)" 
-                        defaultValue="J-12345678-9" 
+                        value={formData.rif}
+                        onChange={handleFieldChange('rif')}
                         placeholder="Ej. J-00000000-0"
                     />
 
@@ -180,38 +298,45 @@ export default function GeneralTab() {
                         </label>
                         <textarea 
                             rows="3"
+                            value={formData.fiscalAddress}
+                            onChange={handleFieldChange('fiscalAddress')}
                             className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-sm rounded-lg px-3 py-2 text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] transition-all resize-none"
-                            defaultValue="Av. Principal de Lechería, Edificio Costa, Piso 1, Estado Anzoátegui, Venezuela."
+                            placeholder="Ingresa la dirección fiscal completa"
                         ></textarea>
                     </div>
 
                     <InputGroup 
                         label="Teléfono de Recepción" 
-                        defaultValue="+58 (281) 555-0199" 
+                        value={formData.receptionPhone}
+                        onChange={handleFieldChange('receptionPhone')}
                         type="tel"
+                        placeholder="Ej. +58 (281) 555-0199"
                     />
                     
                     <InputGroup 
                         label="Correo Electrónico Oficial" 
-                        defaultValue="contacto@hotelhorizonte.com" 
+                        value={formData.officialEmail}
+                        onChange={handleFieldChange('officialEmail')}
                         type="email"
+                        placeholder="Ej. contacto@tu-hotel.com"
                     />
 
                     <div className="flex flex-col gap-1.5">
                         <label className="text-sm font-medium text-[var(--color-text-primary)]">
                             Zona Horaria Predeterminada
                         </label>
-                        <select className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-sm rounded-lg px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]">
-                            <option value="America/Caracas">America/Caracas (GMT-4)</option>
-                            <option value="America/Bogota">America/Bogota (GMT-5)</option>
-                            <option value="America/New_York">America/New_York (GMT-5)</option>
-                            <option value="Europe/Madrid">Europe/Madrid (GMT+1)</option>
-                        </select>
+                        <CustomDropdown
+                            value={formData.timezone}
+                            onChange={handleSelectChange('timezone')}
+                            options={TIMEZONE_OPTIONS}
+                            placeholder="Seleccionar zona horaria"
+                        />
                     </div>
 
                     <InputGroup 
                         label="Sitio Web" 
-                        defaultValue="https://www.hotelhorizonte.com" 
+                        value={formData.website}
+                        onChange={handleFieldChange('website')}
                         placeholder="https://"
                     />
                 </div>
