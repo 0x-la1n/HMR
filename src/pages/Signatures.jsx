@@ -1,15 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { FileSignature, ArrowLeft, CheckCircle, Loader2 } from 'lucide-react';
+import { FileSignature, ArrowLeft } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 import SignatureForm from '../components/Signatures/SignatureForm';
 import SignaturePreview from '../components/Signatures/SignaturePreview';
 import SignatureInstructions from '../components/Signatures/SignatureInstructions';
+import { useToast } from '../context/ToastContext';
 
 export default function Signatures() {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
+    const { showToast } = useToast();
 
     // ==== ESTADO DEL FORMULARIO ====
     const [formData, setFormData] = useState({
@@ -21,8 +23,6 @@ export default function Signatures() {
     });
 
     const [currentId, setCurrentId] = useState(searchParams.get('id') || null);
-    const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved' | 'error'
-
     const placeholders = {
         fullName: 'NOMBRE APELLIDO',
         jobTitle: 'CARGO',
@@ -98,7 +98,6 @@ export default function Signatures() {
 
             // Guardar en DB
             if (formData.fullName && formData.jobTitle) {
-                setSaveStatus('saving');
                 try {
                     const token = localStorage.getItem('token');
                     const endpoint = currentId ? `/api/signatures/${currentId}` : '/api/signatures';
@@ -131,17 +130,28 @@ export default function Signatures() {
                         }, { replace: true });
                     }
 
-                    setSaveStatus('saved');
-                    setTimeout(() => setSaveStatus(null), 3000);
+                    showToast({
+                        type: 'success',
+                        title: 'Firma guardada',
+                        message: 'La firma se guardó correctamente en el historial.',
+                    });
                 } catch {
-                    setSaveStatus('error');
-                    setTimeout(() => setSaveStatus(null), 3000);
+                    showToast({
+                        type: 'error',
+                        title: 'No se pudo guardar',
+                        message: 'La descarga sí funcionó, pero falló el guardado en historial.',
+                    });
                 }
             }
 
             setIsDownloading(false);
         } catch (err) {
             console.error('Failed to download image', err);
+            showToast({
+                type: 'error',
+                title: 'Error al descargar',
+                message: 'No se pudo generar la imagen de la firma. Intenta nuevamente.',
+            });
             setIsDownloading(false);
         }
     };
@@ -163,14 +173,15 @@ export default function Signatures() {
             <div className="mx-auto max-w-auto">
                 {/* Header */}
                 <div className="mb-4">
-                    <button
-                        onClick={() => navigate('/signatures')}
-                        className="flex items-center gap-1.5 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] mb-3 transition-colors group"
-                    >
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-                        Volver al historial
-                    </button>
                     <div className="flex items-center gap-3 mb-2">
+                        <button
+                            onClick={() => navigate('/signatures')}
+                            aria-label="Volver al historial"
+                            title="Volver al historial"
+                            className="p-2.5 rounded-xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20 transition-colors"
+                        >
+                            <ArrowLeft className="w-6 h-6" />
+                        </button>
                         <div className="p-2.5 rounded-xl bg-[var(--color-primary)]/10">
                             <FileSignature className="w-6 h-6 text-[var(--color-primary)]" />
                         </div>
@@ -179,20 +190,6 @@ export default function Signatures() {
                         </h1>
                     </div>
                 </div>
-
-                {/* Toast de guardado */}
-                {saveStatus && (
-                    <div className={`mb-4 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${saveStatus === 'saving' ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20' :
-                        saveStatus === 'saved' ? 'bg-green-500/10 text-green-600 border border-green-500/20' :
-                            'bg-red-500/10 text-red-500 border border-red-500/20'
-                        }`}>
-                        {saveStatus === 'saving' && <Loader2 className="w-4 h-4 animate-spin" />}
-                        {saveStatus === 'saved' && <CheckCircle className="w-4 h-4" />}
-                        {saveStatus === 'saving' && 'Guardando firma en el historial…'}
-                        {saveStatus === 'saved' && 'Firma guardada en el historial correctamente'}
-                        {saveStatus === 'error' && 'No se pudo guardar en el historial (la descarga sí funcionó)'}
-                    </div>
-                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {/* COLUMNA IZQUIERDA: Formulario */}

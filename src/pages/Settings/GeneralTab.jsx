@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Globe, Building2, UploadCloud, Save } from 'lucide-react';
 import CustomDropdown from '../../components/common/CustomDropdown';
+import Button from '../../components/common/Button';
 
 const STORAGE_KEY = 'hmr_general_profile';
 
@@ -175,14 +176,15 @@ export default function GeneralTab() {
                         Perfil Corporativo del Hotel
                     </h2>
                 </div>
-                <button
+                <Button
                     onClick={handleSave}
                     disabled={!hasChanges || isSaving}
-                    className="flex items-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-4 py-2 rounded-full font-medium shadow-sm transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[var(--color-primary)]"
+                    variant="register"
+                    icon={Save}
+                    className="active:scale-95"
                 >
-                    <Save size={18} />
                     <span>{isSaving ? 'Guardando...' : 'Guardar Cambios'}</span>
-                </button>
+                </Button>
             </div>
 
             {saveStatus === 'saved' && (

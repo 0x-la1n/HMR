@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Search,
     LogOut,
-    User,
     ChevronDown,
     Github,
     Activity,
@@ -16,7 +14,6 @@ import { useAuth } from '../../context/AuthContext';
  * Contiene: Buscador, Estado, Notificaciones, Github, Perfil
  */
 export default function Navbar() {
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const navigate = useNavigate();
     const { user, logout } = useAuth();
@@ -49,31 +46,8 @@ export default function Navbar() {
 
     return (
         <header className="sticky top-0 z-30 h-16 bg-[var(--color-bg-primary)]/80 backdrop-blur-md border-b border-[var(--color-border)] px-6 flex items-center justify-between">
-            {/* Left Section: Search & Breadcrumbs placeholder */}
-            <div className="flex items-center gap-4 flex-1">
-                {/* Search Bar */}
-                <div className="relative hidden md:block w-full max-w-md">
-                    <div className="relative group">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-primary)] transition-colors" />
-                        <input
-                            type="text"
-                            placeholder="Buscar..."
-                            className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] text-sm rounded-lg pl-10 pr-4 py-2 text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
-                        />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                            <kbd className="hidden lg:inline-flex items-center h-5 px-1.5 text-[10px] font-medium text-[var(--color-text-muted)] bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded">Ctrl K</kbd>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mobile Search Icon */}
-                <button
-                    onClick={() => setIsSearchOpen(!isSearchOpen)}
-                    className="md:hidden p-2 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] rounded-full"
-                >
-                    <Search className="w-5 h-5" />
-                </button>
-            </div>
+            {/* Left Spacer */}
+            <div className="flex-1" />
 
             {/* Right Section: Utilities & Profile */}
             <div className="flex items-center gap-4">

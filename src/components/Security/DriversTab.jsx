@@ -57,8 +57,8 @@ export default function DriversTab() {
                     />
                 </div>
                 <div className="flex gap-3 w-full sm:w-auto">
-                    <Button className="!rounded-full" variant="outline" icon={FileText}>Exportar</Button>
-                    <Button className="!rounded-full" onClick={() => setIsDriverModalOpen(true)} icon={Plus}>Añadir Chofer</Button>
+                    <Button variant="register" icon={FileText}>Exportar</Button>
+                    <Button variant="register" onClick={() => setIsVehicleModalOpen(true)} icon={Plus}>Añadir</Button>
                 </div>
             </div>
 

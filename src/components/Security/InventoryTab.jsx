@@ -45,7 +45,7 @@ export default function InventoryTab() {
         <div className="space-y-6 animate-in fade-in duration-500 relative">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h3 className="text-xl font-semibold text-[var(--color-text-primary)]">Directorio de Vehículos</h3>
-                <Button className="!rounded-full" onClick={() => setIsModalOpen(true)} icon={Plus}>Añadir Vehículo</Button>
+                <Button variant="register" onClick={() => setIsModalOpen(true)} icon={Plus}>Añadir Vehículo</Button>
             </div>
 
             <Card padding="none" className="overflow-hidden">

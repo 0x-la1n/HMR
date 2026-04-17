@@ -54,9 +54,6 @@ export default function Settings() {
                         </div>
                         <h1 className="text-xl font-semibold text-[var(--color-text-primary)]">Configuración</h1>
                     </div>
-                    <p className="text-[var(--color-text-secondary)]">
-                        Gestiona los parámetros del sistema HMR
-                    </p>
                 </div>
             </div>
 

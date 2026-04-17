@@ -18,6 +18,8 @@ export default function Button({
         secondary: 'btn-secondary',
         ghost: 'btn-ghost',
         danger: 'bg-[var(--color-danger)] text-white border-[var(--color-danger)] hover:opacity-90',
+        register: 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-light)] text-white border border-transparent !rounded-full !px-4 !py-2 shadow-sm',
+        back: 'bg-transparent text-[var(--color-text-muted)] border border-[var(--color-border)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] hover:bg-[var(--color-bg-tertiary)] !rounded-full !px-3.5 !py-1.5',
     };
 
     const sizes = {
@@ -28,7 +30,7 @@ export default function Button({
 
     return (
         <button
-            className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+            className={`${baseStyles} ${variants[variant] || variants.primary} ${sizes[size]} ${className}`}
             {...props}
         >
             {Icon && iconPosition === 'left' && <Icon className="w-4 h-4" />}

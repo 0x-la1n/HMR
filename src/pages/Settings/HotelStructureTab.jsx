@@ -4,6 +4,7 @@ import {
     ChevronRight, ChevronDown, Edit2, Plus, AlertCircle,
     Loader2, MoreHorizontal
 } from 'lucide-react';
+import Button from '../../components/common/Button';
 
 // ── Shared Components ────────────────────────────────────────────────────────
 
@@ -204,7 +205,7 @@ const BuildingCard = ({ module, onToggleModule, onToggleFloor, onToggleRoom }) =
     return (
         <div className={`group bg-[var(--color-bg-secondary)] border rounded-xl transition-all duration-300 shadow-sm ${module.is_active ? 'border-[var(--color-border)]' : 'border-red-900/30 bg-red-950/10'}`}>
             {/* Header del Edificio */}
-            <div className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 gap-3 ${module.is_active ? 'bg-[var(--color-bg-tertiary)]/30' : 'bg-transparent'} rounded-t-xl border-b border-[var(--color-border)]`}>
+            <div className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 gap-3 ${module.is_active ? 'bg-[var(--color-bg-tertiary)]/30' : 'bg-transparent'} rounded-t-xl`}>
                 
                 {/* Left: Controls & Title */}
                 <div className="flex items-center gap-3">
@@ -240,8 +241,6 @@ const BuildingCard = ({ module, onToggleModule, onToggleFloor, onToggleRoom }) =
                     <button className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1.5 hover:bg-[var(--color-bg-tertiary)] rounded-full transition-colors">
                         <Edit2 className="w-3.5 h-3.5" />
                     </button>
-                    
-                    <div className="h-6 w-px bg-[var(--color-border)]"></div>
                     
                     <ToggleSwitch 
                         checked={module.is_active} 
@@ -344,14 +343,10 @@ export default function HotelStructureTab() {
                             Estructura Física del Complejo
                         </h2>
                    </div>
-                   <p className="text-sm text-[var(--color-text-secondary)]">
-                       Modela la disposición de tus instalaciones. Deshabilita bloques, pisos o habitaciones temporalmente.
-                   </p>
                 </div>
-                <button className="flex items-center gap-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)] px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                    <Plus className="w-4 h-4" />
-                    <span>Añadir Edificio o Zona</span>
-                </button>
+                <Button variant="register" icon={Plus}>
+                    Añadir Edificio o Zona
+                </Button>
             </div>
 
             {/* Metrics */}

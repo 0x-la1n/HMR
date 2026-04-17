@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
@@ -24,38 +25,40 @@ import Reservations from './pages/Reception/Reservations';
 function App() {
     return (
         <BrowserRouter>
-            <AuthProvider>
-                <Routes>
-                    {/* Rutas públicas */}
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+            <ToastProvider>
+                <AuthProvider>
+                    <Routes>
+                        {/* Rutas públicas */}
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
 
-                    {/* Rutas protegidas */}
-                    <Route
-                        path="/"
-                        element={
-                            <ProtectedRoute>
-                                <Layout />
-                            </ProtectedRoute>
-                        }
-                    >
-                        <Route index element={<Dashboard />} />
-                        <Route path="signatures" element={<SignaturesHistory />} />
-                        <Route path="signatures/new" element={<Signatures />} />
-                        <Route path="maintenance" element={<MaintenanceHistory />} />
-                        <Route path="maintenance/dashboard" element={<MaintenanceDashboard />} />
-                        <Route path="maintenance/room/:id" element={<RoomTimeline />} />
-                        <Route path="maintenance/rooms" element={<RoomsMaintenance />} />
-                        <Route path="security/vehicle-control" element={<VehicleControl />} />
-                        <Route path="housekeeping/lenceria" element={<Linen />} />
-                        <Route path="reception/reservas" element={<Reservations />} />
-                        <Route path="settings" element={<Settings />} />
-                    </Route>
+                        {/* Rutas protegidas */}
+                        <Route
+                            path="/"
+                            element={
+                                <ProtectedRoute>
+                                    <Layout />
+                                </ProtectedRoute>
+                            }
+                        >
+                            <Route index element={<Dashboard />} />
+                            <Route path="signatures" element={<SignaturesHistory />} />
+                            <Route path="signatures/new" element={<Signatures />} />
+                            <Route path="maintenance" element={<MaintenanceHistory />} />
+                            <Route path="maintenance/dashboard" element={<MaintenanceDashboard />} />
+                            <Route path="maintenance/room/:id" element={<RoomTimeline />} />
+                            <Route path="maintenance/rooms" element={<RoomsMaintenance />} />
+                            <Route path="security/vehicle-control" element={<VehicleControl />} />
+                            <Route path="housekeeping/lenceria" element={<Linen />} />
+                            <Route path="reception/reservas" element={<Reservations />} />
+                            <Route path="settings" element={<Settings />} />
+                        </Route>
 
-                    {/* Redirect para rutas no encontradas */}
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-            </AuthProvider>
+                        {/* Redirect para rutas no encontradas */}
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                </AuthProvider>
+            </ToastProvider>
         </BrowserRouter>
     );
 }

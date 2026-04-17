@@ -6,6 +6,7 @@ import {
     TrendingUp, AlertCircle, Loader2, X, ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import Button from '../components/common/Button';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -278,13 +279,14 @@ export default function SignaturesHistory() {
                                 )}
                             </div>
                         )}
-                        <button
+                        <Button
                             onClick={() => navigate('/signatures/new')}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-light)] text-white text-sm font-medium rounded-xl transition-colors shadow-sm shrink-0"
+                            variant="register"
+                            icon={Plus}
+                            className="shrink-0"
                         >
-                            <Plus className="w-4 h-4" />
                             Nueva Firma
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -317,10 +319,6 @@ export default function SignaturesHistory() {
                     </div>
                 ) : (
                     <>
-                        <p className="text-xs text-[var(--color-text-muted)] mb-2">
-                            {filtered.length} {filtered.length === 1 ? 'firma' : 'firmas'}
-                            {search ? ` encontradas para "${search}"` : ' registradas'}
-                        </p>
                         <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl overflow-hidden">
                             <table className="w-full">
                                 <thead>

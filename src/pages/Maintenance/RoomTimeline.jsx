@@ -82,12 +82,15 @@ export default function RoomTimeline() {
             <div className="mx-auto max-w-3xl">
                 {/* Header */}
                 <div className="mb-6">
-                    <button onClick={() => navigate('/maintenance')}
-                        className="flex items-center gap-1.5 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] mb-3 transition-colors group">
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-                        Volver al historial
-                    </button>
                     <div className="flex items-center gap-3 mb-1">
+                        <button
+                            onClick={() => navigate('/maintenance')}
+                            aria-label="Volver al historial"
+                            title="Volver al historial"
+                            className="p-2.5 rounded-xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20 transition-colors"
+                        >
+                            <ArrowLeft className="w-6 h-6" />
+                        </button>
                         <div className="p-2.5 rounded-xl bg-[var(--color-primary)]/10">
                             <DoorOpen className="w-6 h-6 text-[var(--color-primary)]" />
                         </div>

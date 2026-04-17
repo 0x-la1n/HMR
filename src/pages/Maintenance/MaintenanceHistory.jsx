@@ -10,6 +10,7 @@ import { formatDate } from '../../utils/formatters';
 import { useMaintenanceLogs, useMaintenanceDashboard } from '../../hooks/useMaintenance';
 import CreateMaintenanceModal from '../../components/Maintenance/CreateMaintenanceModal';
 import DeleteMaintenanceModal from '../../components/Maintenance/DeleteMaintenanceModal';
+import Button from '../../components/common/Button';
 import { LogRow, HealthBar } from '../../components/Maintenance/MaintenanceComponents';
 
 // ── Main page ────────────────────────────────────────────────────────────────
@@ -138,13 +139,14 @@ export default function MaintenanceHistory() {
                         </div>
 
                         {/* Action Button */}
-                        <button
+                        <Button
                             onClick={() => setShowCreate(true)}
-                            className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-light)] text-white text-sm font-medium rounded-xl transition-colors shadow-sm shrink-0 w-full sm:w-auto"
+                            variant="register"
+                            icon={Plus}
+                            className="shrink-0 w-full sm:w-auto"
                         >
-                            <Plus className="w-4 h-4" />
                             Registrar
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -184,11 +186,7 @@ export default function MaintenanceHistory() {
                         </div>
                         <div className="text-center">
                             <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-1">Sin registros de mantenimiento</h3>
-                            <p className="text-sm text-[var(--color-text-secondary)] max-w-xs">Registra el primer mantenimiento para comenzar a trackear el estado de las cerraduras.</p>
                         </div>
-                        <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-light)] text-white text-sm font-medium rounded-xl transition-colors">
-                            <Plus className="w-4 h-4" /> Primer registro
-                        </button>
                     </div>
                 ) : (
                     <>
@@ -252,10 +250,6 @@ export default function MaintenanceHistory() {
                         </div>
 
                         {/* HISTORIAL (STACK BOTTOM) */}
-                        <p className="text-xs text-[var(--color-text-muted)] mb-2">
-                            {filtered.length} {filtered.length === 1 ? 'registro' : 'registros'}
-                            {search ? ` encontrados para "${search}"` : ''}
-                        </p>
                         <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-sm overflow-hidden flex flex-col flex-1 h-[600px]">
                             <table className="w-full">
                                 <thead>
