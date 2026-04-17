@@ -10,11 +10,22 @@ jobs:
     runs-on: self-hosted
 
     steps:
+    - name: Prepare workspace ownership (self-hosted)
+      run: |
+        mkdir -p "$GITHUB_WORKSPACE"
+        docker run --rm -v "$GITHUB_WORKSPACE:/workspace" alpine sh -c "chown -R $(id -u):$(id -g) /workspace || true"
+
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+        clean: false
+
+    - name: Cleanup Python cache files
+      run: |
+        docker run --rm -v "$GITHUB_WORKSPACE:/workspace" alpine sh -c "find /workspace -type d -name '__pycache__' -prune -exec rm -rf {} +"
 
     - name: Deploy Docker Containers
       run: |
-        # Ya estamos dentro del servidor, así que ejecutamos Docker directamente
-        docker compose up -d --build
+        # Despliegue en modo producción (frontend estático con Nginx en puerto 80)
+        docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
         docker image prune -f
