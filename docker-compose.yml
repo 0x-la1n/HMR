@@ -27,6 +27,7 @@ services:
     volumes:
       - ./server:/app
     environment:
+      - PYTHONDONTWRITEBYTECODE=1
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_USER=${DB_USER:-hmr}
