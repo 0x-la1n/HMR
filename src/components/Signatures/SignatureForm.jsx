@@ -45,7 +45,7 @@ export default function SignatureForm({ formData, setFormData, handleClear, fixe
             <div className="flex justify-between items-center pb-4">
                 <h2 className="text-lg font-medium text-[var(--color-text-primary)] flex items-center gap-2 m-0">
                     <User className="w-7 h-7 text-[var(--color-primary)]" />
-                    Datos del Colaborador
+                    Datos del Usuario
                 </h2>
                 <button
                     onClick={handleClear}
@@ -79,7 +79,7 @@ export default function SignatureForm({ formData, setFormData, handleClear, fixe
                 {/* Cargo */}
                 <div>
                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">
-                        Cargo / Departamento
+                        Departamento / Cargo
                     </label>
                     <div className="relative">
                         <SettingsIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />

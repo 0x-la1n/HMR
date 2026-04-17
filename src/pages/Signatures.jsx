@@ -178,9 +178,6 @@ export default function Signatures() {
                             {currentId ? 'Editar Firma' : 'Nueva Firma'}
                         </h1>
                     </div>
-                    <p className="text-[var(--color-text-secondary)]">
-                        Genera y personaliza la firma de correo electrónico oficial del Hotel Margarita Real.
-                    </p>
                 </div>
 
                 {/* Toast de guardado */}

@@ -61,17 +61,7 @@ function EmptyState({ onNew }) {
                 <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-1">
                     No hay firmas guardadas
                 </h3>
-                <p className="text-sm text-[var(--color-text-secondary)] max-w-xs">
-                    Genera la primera firma corporativa del equipo y quedará registrada aquí.
-                </p>
             </div>
-            <button
-                onClick={onNew}
-                className="flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-light)] text-white text-sm font-medium rounded-xl transition-colors"
-            >
-                <Plus className="w-4 h-4" />
-                Crear primera firma
-            </button>
         </div>
     );
 }
@@ -267,9 +257,6 @@ export default function SignaturesHistory() {
                                 Firmas Corporativas
                             </h1>
                         </div>
-                        <p className="text-[var(--color-text-secondary)] ml-1">
-                            Historial y gestión de firmas del equipo
-                        </p>
                     </div>
 
                     {/* Right: Search & Action */}
@@ -340,7 +327,7 @@ export default function SignaturesHistory() {
                                     <tr className="border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)]">
                                         <th className="py-2 pl-3 pr-2 w-10"></th>
                                         <th className="py-2 px-2 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">Nombre y Apellido</th>
-                                        <th className="py-2 px-2 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">Departamento/Cargo</th>
+                                        <th className="py-2 px-2 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">Departamento / Cargo</th>
                                         <th className="py-2 px-2 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">Correo</th>
                                         <th className="py-2 px-2 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">Fecha</th>
                                         <th className="py-2 pl-2 pr-3 w-20"></th>
