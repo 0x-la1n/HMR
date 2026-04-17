@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Settings, Wrench, ChevronDown, Shield, BedDouble, Hotel } from 'lucide-react';
+import { Home, Settings, Wrench, ChevronDown, Shield, BedDouble, Hotel, ServerCog } from 'lucide-react';
 
 export default function Sidebar() {
     const location = useLocation();
@@ -222,7 +222,7 @@ export default function Sidebar() {
                         }`}
                     >
                         <div className="flex items-center gap-3">
-                            <Settings className="w-5 h-5" />
+                            <ServerCog className="w-5 h-5" />
                             <span>Sistemas</span>
                         </div>
                         <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isSystemsOpen ? 'rotate-180' : ''}`} />
